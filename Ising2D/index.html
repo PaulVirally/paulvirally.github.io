@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ising 2D</title>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="styles.css">
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js" integrity="sha512-NxocnqsXP3zm0Xb42zqVMvjQIktKEpTIbCXXyhBPxqGZHqhcOXHs4pXI/GoZ8lE+2NJONRifuBpi9DxC58L0Lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        <script src="p5.js"></script>
+        <script type="text/javascript" src="utils.js"></script>
+        <script type="text/javascript" src="grid.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </head>
+    <body>
+        <div id="isingContainer">
+            <div id="controls">
+                <button id="resetButton" type="button">Reset</button>
+                <div id="latticeController">
+                    <p>Lattice Type:</p>
+                    <select id="latticeSelect" name="latticeType">
+                        <option value="square">Square Lattice (4 Neighbours)</option>
+                    </select>
+                </div>
+                <div id="rowController">
+                    <p>Rows:</p>
+                    <input id="rowSlider" type="range"/>
+                    <input id="rowBox" type="number"/>
+                </div>
+                <div id="colController">
+                    <p>Columns:</p>
+                    <input id="colSlider" type="range"/>
+                    <input id="colBox" type="number"/>
+                </div>
+                <div id="speedController">
+                    <p>Speed:</p>
+                    <input id="speedSlider" type="range"/>
+                    <input id="speedBox" type="number"/>
+                </div>
+                <div id="fieldController">
+                    <p>External Magnetic Field:</p>
+                    <input id="fieldSlider" type="range"/>
+                    <input id="fieldBox" type="number"/>
+                </div>
+                <div id="tempController">
+                    <p>Temperature:</p>
+                    <input id="tempSlider" type="range"/>
+                    <input id="tempBox" type="number"/>
+                </div>
+            </div>
+            <div id="plotCanvasContainer"></div>
+            <div id="isingCanvasContainer"></div>
+        </div>
+    </body>
+</html>
