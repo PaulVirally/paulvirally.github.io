@@ -40,19 +40,20 @@ class Grid {
     }
 
     // Go through `numSpins` spins and flip them conditionally (one interation of Metropolis Hastings)
-    update(T, numSpins=1) {
+    update(temp, field, numSpins=1) {
         for (let i = 0; i < numSpins; ++i) {
             const x = randIntRange(0, this.#width - 1);
             const y = randIntRange(0, this.#height - 1);
-            const dE = 2*this.getSpinEnergy(x, y);
+            const spin = this.#getSpin(x, y);
+            const dE = 2*this.getSpinEnergy(x, y) + 2*field*spin;
 
             // Flip If it is energetically favourable or with probability exp(-dE/T)
-            if ((dE < 0) || (Math.random() < Math.exp(-dE/T))) {
+            if ((dE < 0) || (Math.random() < Math.exp(-dE/temp))) {
                 this.#flipSpin(x, y);
                 this.#changes.push([x, y]); // Make sure we know to draw the flipped spin
 
                 // If the flipped spin is spin up, the magnetization goes up, otherwise it goes down
-                if (this.#getSpin(x, y) > 0) {
+                if (-1*spin > 0) {
                     this.#magnetization += 2;
                 }
                 else {

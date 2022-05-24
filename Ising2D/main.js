@@ -26,15 +26,10 @@ function setup() {
 
     // Reset the canvas and the grid
     resetIsingCanvas();
-
-    console.log('setup');
-    console.log(cellSize);
-    console.log(cellPadding);
-    console.log(cellMargin);
 }
 
 function draw() {
-    grid.update(temp, speed);
+    grid.update(temp, field, speed);
     grid.draw(cellSize, cellPadding, cellMargin);
     // console.log(grid.getMagnetization());
 }
@@ -86,28 +81,16 @@ function resetIsingCanvas() {
 
 // Returns the margin to apply to the grid to center it in the screen
 function getCellMargin(screenSize, gridDim) {
-    console.log('getCellMargin');
-    console.log('screenSize: ', screenSize);
-    console.log('gridDim: ', gridDim);
-    console.log('cellSize: ', cellSize);
-    console.log('cellPadding: ', cellPadding);
     const usedSize = p5.Vector.mult(gridDim, p5.Vector.add(cellSize, cellPadding));
-    console.log('usedSize: ', usedSize);
     const margin = p5.Vector.sub(screenSize, usedSize).div(2);
-    console.log('margin: ', margin);
     return margin;
 }
 
 // Returns the size each cell should be to be able to fit the whole canvas
 function getCellSize(screenSize, gridDim) {
-    console.log('getCellSize');
-    console.log('screenSize: ', screenSize);
-    console.log('gridDim: ', gridDim);
-    console.log('cellPadding: ', cellPadding);
     const sizeVec = p5.Vector.div(screenSize, gridDim).sub(cellPadding);
     let size = Math.floor(min(sizeVec.x, sizeVec.y)); // Make sure the cells are square to make it look nice
     size = size < 1 ? 1 : size; // Make sure the size is at least one
-    console.log('size: ', size);
     return createVector(size, size, 1);
 }
 
@@ -131,9 +114,13 @@ function setupSliderBox(name, min, value, max, step, onchange) {
     slider.addEventListener('input', () => {syncInputs(slider, box)});
     box.addEventListener('input', () => {syncInputs(box, slider)});
 
-    // Setup their onchange event
-    slider.addEventListener('change', onchange);
-    box.addEventListener('change', onchange);
+    // Setup their onchange event (unless it is for field, speed, or temp, in which case just add another oninput event)
+    let eventHook = 'change';
+    if (['field', 'speed', 'temp'].includes(name)) {
+        eventHook = 'input';
+    }
+    slider.addEventListener(eventHook, onchange);
+    box.addEventListener(eventHook, onchange);
 }
 
 function getSliderValue(id) {
