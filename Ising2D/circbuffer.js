@@ -32,11 +32,15 @@ class CircBuffer {
     plot(sketch, minX, maxX, colorR, colorG, colorB) {
         sketch.stroke(colorR, colorG, colorB);
         for (let i = 0; i < this.#data.length - 1; ++i) {
-            const x0 = remap(i, 0, this.#data.length, minX, maxX);
-            const x1 = remap(i+1, 0, this.#data.length, minX, maxX);
+            const x0 = remap(i, 0, this.#capacity, minX, maxX);
+            const x1 = remap(i+1, 0, this.#capacity, minX, maxX);
             const y0 = this.#data[i];
             const y1 = this.#data[i+1];
             sketch.line(x0, y0, x1, y1);
         } 
+    }
+
+    getIdx() {
+        return this.#insertIdx;
     }
 }

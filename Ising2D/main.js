@@ -10,7 +10,7 @@ let temp = 2.269;
 let speed = 100;
 let field = 0;
 
-const numPts = 3000; // Number of points to plot
+const numPts = 2000; // Number of points to plot
 let tempVals = new CircBuffer(numPts); // Will holds the temperature over time
 let fieldVals = new CircBuffer(numPts); // Will hold the value of the external field over time
 let magVals = new CircBuffer(numPts); // Will hold the value of the magnetization over time
@@ -72,6 +72,11 @@ let plotSketch = new p5((sketch) => {
         magVals.plot(sketch, minX, maxX, 31, 119, 180);
         tempVals.plot(sketch, minX, maxX, 255, 127, 14);
         fieldVals.plot(sketch, minX, maxX, 44, 160, 44);
+
+        // Scan line
+        const currX = remap(magVals.getIdx(), 0, numPts, minX, maxX);
+        sketch.stroke(214, 39, 40);
+        sketch.line(currX, minY, currX, maxY);
 
         // Draw the legend
         // Magnetization
