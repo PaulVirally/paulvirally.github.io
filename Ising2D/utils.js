@@ -32,3 +32,7 @@ function popcount8(x) {
     x = (x & 0x33) + ((x >> 2) & 0x33);
     return (((x + (x >> 4)) & 0x0f) * 0x01);
 }
+
+function remap(x, x0, x1, y0, y1) {
+    return y0 + (y1 - y0) * (x - x0)/(x1 - x0);
+}

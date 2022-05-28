@@ -64,9 +64,9 @@ class Grid {
     }
 
     // Draws the grid where the size of each cell is defined by `size` and the pading between cells is defined by `padding`
-    draw(size=createVector(1, 1), padding=createVector(0, 0), margin=createVector(0, 0)) {
+    draw(sketch, size, padding, margin) {
         if (this.latticeType === Lattice.Square) {
-            this.#drawSquare(size, padding, margin);
+            this.#drawSquare(sketch, size, padding, margin);
         }
     }
 
@@ -116,16 +116,21 @@ class Grid {
     }
 
     // Draws the grid as a square lattice
-    #drawSquare(size, padding, margin) {
+    #drawSquare(sketch, size, padding, margin) {
         for (const [idxX, idxY] of this.#changes) {
             const spin = this.#getSpin(idxX, idxY);
-            const fillColor = spin > 0 ? color(255) : color(0);
-            noStroke();
-            fill(fillColor);
+            const fillColor = spin > 0 ? 255 : 0;
+            if ((padding.x == 0) || (padding.y == 0)) {
+                sketch.noStroke();
+            }
+            else {
+                sketch.stroke(123); // It's a funny number
+            }
+            sketch.fill(fillColor);
 
             const x = (idxX * size.x) + ((idxX + 1) * padding.x);
             const y = (idxY * size.y) + ((idxY + 1) * padding.y);
-            rect(x + margin.x, y + margin.y, size.x, size.y);
+            sketch.rect(x + margin.x, y + margin.y, size.x, size.y);
         }
 
         // Now that we've draw everything, we can reset the changes to be empty
