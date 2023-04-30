@@ -3,14 +3,25 @@
     <head>
         <title>Crochet Pattern Builder</title>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js" integrity="sha512-WJXVjqeINVpi5XXJ2jn0BSCfp0y80IKrYh731gLRnkAS9TKc5KNt/OfLtu+fCueqdWniouJ1ubM+VI/hbo7POQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js" integrity="sha512-WJXVjqeINVpi5XXJ2jn0BSCfp0y80IKrYh731gLRnkAS9TKc5KNt/OfLtu+fCueqdWniouJ1ubM+VI/hbo7POQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+		<script src="p5.js"></script>
 		<script src="cell.js"></script>
 		<script src="grid.js"></script>
-		<script src="main.js"></script>
-        <!-- <link rel="stylesheet" href="styles.css">  -->
+		<script src="camera.js"></script>
+		<script src="utils.js"></script>
+        <link rel="stylesheet" href="styles.css"> 
     </head>
     <body>
-		<div id="grid_container">
+		<div id="content">
+			<div id="grid_container"></div>
+			<div id="toolbar_container">
+				<div id="pan_">Pan</div>
+				<div id="pencil">Pencil</div>
+				<div id="undo">Undo</div>
+				<div id="redo">Redo</div>
+			</div>
+			<div id="palette_container">This is a test</div>
 		</div>
+		<script src="main.js"></script>
     </body>
 </html>

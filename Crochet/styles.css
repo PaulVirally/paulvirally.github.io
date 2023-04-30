@@ -1,0 +1,48 @@
+body {
+	min-height: 100vh;
+	overflow: hidden;
+	margin: 0;
+}
+
+#content {
+	display: grid;
+	min-height: 100vh;
+}
+
+#grid_container {
+	grid-column-start: 1;
+	grid-column-end: 7;
+	grid-row-start: 1;
+	grid-row-end: 7;
+}
+
+#palette_container {
+	border-top: 1px solid black;
+	grid-column-start: 1;
+	grid-column-end: 7;
+	grid-row-start: 7;
+	grid-row-end: 8;
+}
+
+#toolbar_container {
+	border-left: 1px solid black;
+	grid-column-start: 7;
+	grid-column-end: 8;
+	grid-row-start: 1;
+	grid-row-end: 8;
+}
+
+#toolbar_container div {
+	background-color: #eee;
+	color: black;
+	display: block;
+}
+
+#toolbar_container div:hover {
+	background-color: #ccc;
+	cursor: pointer;
+}
+
+#toolbar_container div.active {
+	background-color: #aaa;
+}
