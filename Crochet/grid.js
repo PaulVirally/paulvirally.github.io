@@ -38,7 +38,7 @@ class Grid {
 		if (idx < 0 || idx >= this.#cells.length) {
 			throw new Error(`Invalid cell index: ${idx} at (${idx_x}, ${idx_y})`);
 		}
-		this.#cells[idx].fill = color;
+		this.#cells[idx].color = color;
 	}
 
 	draw(zoom_level) {
@@ -55,5 +55,11 @@ class Grid {
 		const idx_x = Math.floor((loc.x - this.#tl.x) / (this.#cell_size + this.#cell_border_width));
 		const idx_y = Math.floor((loc.y - this.#tl.y) / (this.#cell_size + this.#cell_border_width));
 		return { x: idx_x, y: idx_y };
+	}
+
+	get_color_at(coords) {
+		if (coords === null) return null;
+		const idx = coords.y * this.#num_cols + coords.x;
+		return this.#cells[idx].color;
 	}
 }
