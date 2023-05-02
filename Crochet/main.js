@@ -6,10 +6,12 @@ let curr_tool;
 let undo_stack = [];
 let mini_undo_stack = [];
 let redo_stack = [];
+let background_color;
 
 const Tool = Object.freeze({
 	pan_: Symbol('pan_'),
 	pencil: Symbol('pencil'),
+	eraser: Symbol('eraser')
 });
 
 function switch_tools(tool) {
@@ -28,7 +30,7 @@ function switch_tools(tool) {
 	if (curr_tool === Tool.pan_) {
 		grid_canvas.elt.style.cursor = 'grab';
 	}
-	else if (curr_tool === Tool.pencil) {
+	else if (curr_tool === Tool.pencil || curr_tool === Tool.eraser) {
 		grid_canvas.elt.style.cursor = 'crosshair';
 	}
 }
@@ -73,8 +75,10 @@ function setup() {
 	// Setup the tool buttons
 	const move_button = select('#pan_').elt;
 	const pencil_button = select('#pencil').elt;
+	const erase_button = select('#eraser').elt;
 	move_button.addEventListener('click', () => switch_tools(Tool.pan_));
 	pencil_button.addEventListener('click', () => switch_tools(Tool.pencil));
+	erase_button.addEventListener('click', () => switch_tools(Tool.eraser));
 	curr_tool = Tool.pencil;
 	switch_tools(Tool.pencil);
 
@@ -85,6 +89,7 @@ function setup() {
 	redo_button.addEventListener('click', redo);
 
 	grid = new Grid(60, 60, 50, 1, color(0, 0, 0, 0));
+	background_color = color(255, 255, 255);
 
 	// Setup the camera
 	const min_tl = createVector(-grid_canvas.width / 2, -grid_canvas.height / 2);
@@ -99,6 +104,7 @@ function setup() {
 function draw() {
 	grid_canvas.
 	clear();
+	background(background_color);
 	cam.update();
 	grid.draw(cam.get_zoom_level()); // FIXME: The grid zooms with respect to (0, 0). Maybe it should zoom with respect to the camera's position?
 }
@@ -170,7 +176,7 @@ function handle_move(ev) {
 	}
 }
 
-function handle_pencil(ev) {
+function handle_pencil(ev, is_eraser) {
 	// Make sure we left clicked inside the grid container
 	if (ev.button !== 0) return;
 	if (ev.target !== grid_canvas.elt) return;
@@ -196,7 +202,8 @@ function handle_pencil(ev) {
 	const click_coords = p5.Vector.add(createVector(ev.offsetX, ev.offsetY), cam.get_pos()).mult(1/cam.get_zoom_level());
 	const coords = grid.get_cell_coords_at(click_coords);
 	if (coords) {
-		const action = new FillAction(coords, curr_color);
+		const fill_color = is_eraser ? color(0, 0, 0, 0) : curr_color;
+		const action = new FillAction(coords, fill_color);
 		if (action.is_useless) return;
 		mini_undo_stack.push(action);
 	}
@@ -206,9 +213,9 @@ function mouse_event_hanlder(ev) {
 	if (curr_tool === Tool.pan_) {
 		handle_move(ev);
 	}
-	else if (curr_tool === Tool.pencil) {
-		handle_pencil(ev);
-	} 
+	else if (curr_tool === Tool.pencil || curr_tool === Tool.eraser) {
+		handle_pencil(ev, curr_tool === Tool.eraser);
+	}
 }
 
 function mousePressed(ev) {

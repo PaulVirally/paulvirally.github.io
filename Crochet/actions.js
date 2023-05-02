@@ -7,7 +7,7 @@ class FillAction {
 		this.#coords = coords;
 		this.#color = color;
 		this.#old_color = grid.get_color_at(this.#coords);
-		this.is_useless = this.#old_color === this.#color;
+		this.is_useless = colors_equal(this.#color, this.#old_color);
 		this.apply();
 	}
 
