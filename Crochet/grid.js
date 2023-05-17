@@ -7,6 +7,9 @@ class Grid {
 	#cells;
 	#tl;
 	#br;
+	#selection_start;
+	#selection_bb;
+	#selection_hue;
 
 	constructor(num_rows, num_cols, cell_size, cell_border_width, cell_color) {
 		this.#num_rows = num_rows;
@@ -31,6 +34,35 @@ class Grid {
 		this.#br = p5.Vector.sub(this.#cells[this.#cells.length - 1].br, createVector(this.#cell_border_width / 2, this.#cell_border_width / 2));
 		this.width = this.#br.x - this.#tl.x;
 		this.height = this.#br.y - this.#tl.y;
+
+		this.#selection_bb = null; // Empty selection bounding box
+		this.#selection_hue = 0;
+	}
+
+	set_selection_start(start_coords) {
+		this.#selection_start = start_coords;
+	}
+
+	set_selection_end(end_coords) {
+		const start_coords = this.#selection_start;
+
+		// The two cells that define the selection bounding box
+		const start_cell = this.#cells[start_coords.y * this.#num_cols + start_coords.x];
+		const end_cell = this.#cells[end_coords.y * this.#num_cols + end_coords.x];
+
+		// Top left and bottom right corners of the selection bounding box
+		const tl_cell = start_cell.tl.x < end_cell.tl.x ? start_cell : end_cell;
+		const br_cell = start_cell.br.x >= end_cell.br.x ? start_cell : end_cell;
+
+
+		this.#selection_bb = {
+			corner1: tl_cell.tl.copy(),
+			corner2: br_cell.br.copy()
+		};
+	}
+
+	clear_selection() {
+		this.#selection_bb = null;
 	}
 
 	fill(idx_x, idx_y, color) {
@@ -42,9 +74,23 @@ class Grid {
 	}
 
 	draw(zoom_level) {
+		// Draw the cells
 		for (const cell of this.#cells) {
 			cell.draw(zoom_level);
 		}
+
+		// Draw the selection bounding box
+		if (this.#selection_bb !== null) {
+			push();
+			rectMode(CORNERS);
+			colorMode(HSB);
+			noFill();
+			strokeWeight(5);
+			stroke(this.#selection_hue, 100, 100);
+			rect(this.#selection_bb.corner1.x * zoom_level, this.#selection_bb.corner1.y * zoom_level, this.#selection_bb.corner2.x * zoom_level, this.#selection_bb.corner2.y * zoom_level);
+			pop();
+		}
+		this.#selection_hue = (this.#selection_hue + 1) % 360;
 	}
 
 	get_cell_coords_at(loc) {

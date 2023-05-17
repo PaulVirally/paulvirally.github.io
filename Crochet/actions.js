@@ -3,7 +3,7 @@ class FillAction {
 	#color;
 	#old_color;
 
-	constructor (coords, color) {
+	constructor(coords, color) {
 		this.#coords = coords;
 		this.#color = color;
 		this.#old_color = grid.get_color_at(this.#coords);

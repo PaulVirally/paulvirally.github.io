@@ -11,7 +11,8 @@ let background_color;
 const Tool = Object.freeze({
 	pan_: Symbol('pan_'),
 	pencil: Symbol('pencil'),
-	eraser: Symbol('eraser')
+	eraser: Symbol('eraser'),
+	rectangular_selection: Symbol('rectangular_selection'),
 });
 
 function switch_tools(tool) {
@@ -30,7 +31,7 @@ function switch_tools(tool) {
 	if (curr_tool === Tool.pan_) {
 		grid_canvas.elt.style.cursor = 'grab';
 	}
-	else if (curr_tool === Tool.pencil || curr_tool === Tool.eraser) {
+	else if (curr_tool === Tool.pencil || curr_tool === Tool.eraser || curr_tool === Tool.rectangular_selection) {
 		grid_canvas.elt.style.cursor = 'crosshair';
 	}
 }
@@ -76,9 +77,11 @@ function setup() {
 	const move_button = select('#pan_').elt;
 	const pencil_button = select('#pencil').elt;
 	const erase_button = select('#eraser').elt;
+	const rectangular_selection_button = select('#rectangular_selection').elt;
 	move_button.addEventListener('click', () => switch_tools(Tool.pan_));
 	pencil_button.addEventListener('click', () => switch_tools(Tool.pencil));
 	erase_button.addEventListener('click', () => switch_tools(Tool.eraser));
+	rectangular_selection_button.addEventListener('click', () => switch_tools(Tool.rectangular_selection));
 	curr_tool = Tool.pencil;
 	switch_tools(Tool.pencil);
 
@@ -165,6 +168,11 @@ function handle_move(ev) {
 	if (ev.button !== 0) return;
 	if (ev.target !== grid_canvas.elt) return;
 
+	if (ev.type === 'mousedown') {
+		// Change the cursor to a grabbing hand
+		grid_canvas.elt.style.cursor = 'grabbing';
+	}
+
 	if (ev.type === 'mousemove' || ev.type === 'mousedown') {
 		// Pan the camera
 		const click_coords_screen = createVector(ev.offsetX, ev.offsetY);
@@ -173,6 +181,9 @@ function handle_move(ev) {
 	else if (ev.type === 'mouseup') {
 		// Stop panning the camera
 		cam.clear_dragging();
+		
+		// Change the cursor back to a hand
+		grid_canvas.elt.style.cursor = 'grab';
 	}
 }
 
@@ -209,12 +220,37 @@ function handle_pencil(ev, is_eraser) {
 	}
 }
 
+function handle_rectangular_selection(ev) {
+	// Make sure we left clicked inside the grid container
+	if (ev.button !== 0) return;
+	if (ev.target !== grid_canvas.elt) return;
+	if (!(ev.type === 'mousemove' || ev.type === 'mousedown' || ev.type === 'mouseup')) return;
+
+	if (ev.type === 'mousedown') {
+		const click_coords = p5.Vector.add(createVector(ev.offsetX, ev.offsetY), cam.get_pos()).mult(1/cam.get_zoom_level());
+		const coords = grid.get_cell_coords_at(click_coords);
+		if (coords) {
+			grid.set_selection_start(coords);
+		}
+	}
+	else if (ev.type === 'mousemove' || ev.type === 'mouseup') {
+		const click_coords = p5.Vector.add(createVector(ev.offsetX, ev.offsetY), cam.get_pos()).mult(1/cam.get_zoom_level());
+		const coords = grid.get_cell_coords_at(click_coords);
+		if (coords) {
+			grid.set_selection_end(coords);
+		}
+	}
+}
+
 function mouse_event_hanlder(ev) {
 	if (curr_tool === Tool.pan_) {
 		handle_move(ev);
 	}
 	else if (curr_tool === Tool.pencil || curr_tool === Tool.eraser) {
 		handle_pencil(ev, curr_tool === Tool.eraser);
+	}
+	else if (curr_tool == Tool.rectangular_selection) {
+		handle_rectangular_selection(ev);
 	}
 }
 
